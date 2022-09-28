@@ -164,7 +164,7 @@ function Culebrita(bugs, brain) {
         const hasHead = head.x === v.x && head.y === v.y;
         const hasSnake = this.pieces.find((p) => p.x === v.x && p.y === v.y);
 
-        let content = hasBug ? 2 : hasWall ? 1 : hasSnake ? 1 : hasHead ? 0 : 0;
+        let content = hasBug ? 1 : hasWall ? -1 : hasSnake ? -1 : hasHead ? -2 : 0;
 
         return content;
       });
@@ -212,7 +212,7 @@ function Culebrita(bugs, brain) {
     });
   }
 
-  this.update = ({ canvas, ctx, frame }) => {
+  this.update = ({ ctx }) => {
     this.predict()
     this.movePieces();
     this.drawBugs(ctx);

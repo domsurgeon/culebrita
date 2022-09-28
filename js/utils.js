@@ -42,3 +42,5 @@ const BUGSSIZE = 25
 const LAYERS = [15, 7, 7, 3]
 
 const useAI = true
+
+let rounds = 0

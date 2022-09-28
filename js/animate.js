@@ -1,15 +1,15 @@
-function animate({ canvas, ctx, frame, culebritas }) {
+function animate({ canvas, ctx, culebritas }) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   canvas.focus();
   culebritas.forEach((culebrita) => {
-    culebrita.update({ canvas, ctx, frame });
+    culebrita.update({ ctx });
   });
   const notLost = culebritas.filter((c) => !c.lost);
 
   if (notLost.length) {
     // setTimeout(() => {
     window.requestAnimationFrame(() =>
-      animate({ canvas, ctx, frame: ++frame, culebritas: notLost })
+      animate({ canvas, ctx, culebritas: notLost })
     );
     // }, 100);
   } else {
@@ -21,7 +21,9 @@ function animate({ canvas, ctx, frame, culebritas }) {
 
     const brain = partialBestBrain.brain;
 
+    rounds += culeNum
     document.getElementById('best-score').innerHTML = Math.floor(partialBestBrain.score * 100) / 100
+    document.getElementById('rounds').innerHTML = rounds
     startGames(brain);
   }
 }
