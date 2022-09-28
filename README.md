@@ -1,6 +1,7 @@
 To use just open index.html with a browser
 
 Snake game
+- in AI mode
 
 Upcoming
-- RNN ai play
+- Play vs AI

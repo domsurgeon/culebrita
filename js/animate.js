@@ -1,30 +1,49 @@
-function animate ({ canvas, ctx, frame, culebrita, bugs }) {
+function animate({ canvas, ctx, frame, culebritas }) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  canvas.focus()
-  culebrita.update({ canvas, ctx, frame, bugs });
+  canvas.focus();
+  culebritas.forEach((culebrita) => {
+    culebrita.update({ canvas, ctx, frame });
+  });
+  const notLost = culebritas.filter((c) => !c.lost);
 
-  if (!terminate) {
-    setTimeout(() => {
-      // window.requestAnimationFrame(() =>
-      animate(
-        { canvas, ctx, frame: ++frame, culebrita }
-        // )
-      );
-    }, 150);
+  if (notLost.length) {
+    // setTimeout(() => {
+    window.requestAnimationFrame(() =>
+      animate({ canvas, ctx, frame: ++frame, culebritas: notLost })
+    );
+    // }, 100);
+  } else {
+    const sortedBest = culebritas.sort((a, b) =>
+      a.score === b.score ? 0 : a.score < b.score ? 1 : -1
+    )[0];
+
+    partialBestBrain = partialBestBrain.score > sortedBest.score ? partialBestBrain : sortedBest
+
+    const brain = partialBestBrain.brain;
+
+    console.log(partialBestBrain.score)
+    startGames(brain);
   }
-};
+}
+
+function startGames(brain) {
+  const boardSize = canvasSize / PIECE;
+  const bugs = new Bugs(10, boardSize);
+  const AI = true;
+  const culebritas = new Array(culeNum)
+    .fill(0)
+    .map((c) => new Culebrita([...bugs], AI, brain));
+  animate({ canvas, ctx: canvas.getContext("2d"), culebritas });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("canvas");
   let lastDownTarget = canvas;
-  canvas.height = "100"
-  canvas.width = "100"
-  PIECE = canvas.height / 20
-  const boardSize = canvas.height / PIECE;
+  canvas.height = canvasSize;
+  canvas.width = canvasSize;
+  PIECE = canvasSize / BOARDCOLUMNS;
 
-  const bugs = new Bugs(10, boardSize);
-  const AI = true
-  const culebrita = new Culebrita(bugs, AI);
+  startGames();
 
   document.addEventListener(
     "keydown",
@@ -48,6 +67,4 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     false
   );
-
-  animate({ canvas, ctx: canvas.getContext("2d"), culebrita });
 });
