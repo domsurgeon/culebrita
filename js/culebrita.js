@@ -92,24 +92,10 @@ function Culebrita(bugs, AI) {
 
   this.predict = () => {
     const head = this.pieces[0];
-    const closestBugs = this.bugs.sort(closest);
-    // debugger
+    const direction = this.direction
 
-    function closest(a, b) {
-      const diffXA = Math.abs(head.x - a.x);
-      const diffYA = Math.abs(head.y - a.y);
-      const diffA = diffXA + diffYA;
+    // pared, culebra, bug, vacio
 
-      const diffXB = Math.abs(head.x - b.x);
-      const diffYB = Math.abs(head.y - b.y);
-      const diffB = diffXB + diffYB;
-
-      if (diffA === diffYB) {
-        return 0;
-      }
-
-      return diffA > diffB;
-    }
   };
 
   this.update = ({ canvas, ctx, frame }) => {
