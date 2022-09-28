@@ -68,9 +68,9 @@ function Culebrita (bugs, AI) {
     const head = this.pieces[0]
     if (
       head.x < 0 ||
-      head.x > this.boardSize-1 ||
+      head.x > (this.boardSize / PIECE)-1 ||
       head.y < 0 ||
-      head.y > this.boardSize-1
+      head.y > (this.boardSize / PIECE)-1
     ) {
       console.log(":::CRASHED:::");
       console.log(head);
