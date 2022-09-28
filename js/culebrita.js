@@ -1,4 +1,4 @@
-function Culebrita (bugs, AI) {
+function Culebrita(bugs, AI) {
   this.bugs = bugs;
   this.drawBugs = (ctx) => {
     this.bugs.forEach((bug) => {
@@ -8,12 +8,12 @@ function Culebrita (bugs, AI) {
 
   this.boardSize = 0;
   this.pieceSize = 1;
-  this.pieces = [...culebritaStart]
+  this.pieces = [...culebritaStart];
   this.direction = "up";
   this.order = "up";
 
   this.movePieces = () => {
-    this.settleOrder()
+    this.settleOrder();
 
     let newPiece = this.pieceFromDirection();
     let eaten = !!this.bugs.find(
@@ -29,7 +29,7 @@ function Culebrita (bugs, AI) {
     }
 
     this.pieces.unshift(newPiece);
-    this.checkCrashOrWin()
+    this.checkCrashOrWin();
   };
 
   this.settleOrder = () => {
@@ -47,63 +47,70 @@ function Culebrita (bugs, AI) {
     } else {
       this.direction = this.order;
     }
-  }
+  };
 
   this.pieceFromDirection = () => {
-    const first = this.pieces[0];
+    const head = this.pieces[0];
 
     switch (this.direction) {
       case "up":
-        return { x: first.x, y: first.y - 1 };
+        return { x: head.x, y: head.y - 1 };
       case "down":
-        return { x: first.x, y: first.y + 1 };
+        return { x: head.x, y: head.y + 1 };
       case "right":
-        return { x: first.x + 1, y: first.y };
+        return { x: head.x + 1, y: head.y };
       case "left":
-        return { x: first.x - 1, y: first.y };
+        return { x: head.x - 1, y: head.y };
     }
-  }
+  };
 
   this.checkCrashOrWin = () => {
-    const head = this.pieces[0]
+    const head = this.pieces[0];
     if (
       head.x < 0 ||
-      head.x > (this.boardSize / PIECE)-1 ||
+      head.x > this.boardSize / PIECE - 1 ||
       head.y < 0 ||
-      head.y > (this.boardSize / PIECE)-1
+      head.y > this.boardSize / PIECE - 1
     ) {
       console.log(":::CRASHED:::");
       console.log(head);
       terminate = true;
     }
 
-    if(this.bugs.length === 0) {
+    const eatenItself = !!this.pieces.slice(1).find( p => p.x === head.x && p.y === head.y )
+
+    if(eatenItself) {
+      console.log(":::CANNIBAL:::");
+      terminate = true;
+    }
+
+    if (this.bugs.length === 0) {
       console.log(":::YOU-WON:::");
       terminate = true;
     }
-  }
+  };
 
   this.predict = () => {
-    const head = this.pieces[0]
-    const closestBugs = this.bugs.sort(closest)
+    const head = this.pieces[0];
+    const closestBugs = this.bugs.sort(closest);
     // debugger
 
-    function closest(a,b) {
-      const diffXA = Math.abs(head.x - a.x)
-      const diffYA = Math.abs(head.y - a.y)
-      const diffA = diffXA + diffYA
+    function closest(a, b) {
+      const diffXA = Math.abs(head.x - a.x);
+      const diffYA = Math.abs(head.y - a.y);
+      const diffA = diffXA + diffYA;
 
-      const diffXB = Math.abs(head.x - b.x)
-      const diffYB = Math.abs(head.y - b.y)
-      const diffB = diffXB + diffYB
+      const diffXB = Math.abs(head.x - b.x);
+      const diffYB = Math.abs(head.y - b.y);
+      const diffB = diffXB + diffYB;
 
-      if(diffA === diffYB) {
-        return 0
+      if (diffA === diffYB) {
+        return 0;
       }
 
-      return diffA > diffB
+      return diffA > diffB;
     }
-  }
+  };
 
   this.update = ({ canvas, ctx, frame }) => {
     this.boardSize = canvas.height / this.pieceSize;
@@ -118,4 +125,4 @@ function Culebrita (bugs, AI) {
   };
 
   return this;
-};
+}
