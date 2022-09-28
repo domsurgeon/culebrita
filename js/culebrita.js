@@ -1,5 +1,5 @@
-function Culebrita(bugs, AI, brain) {
-  this.brain = brain || new NeuralNetwork([15, 3]);
+function Culebrita(bugs, brain) {
+  this.brain = brain || new NeuralNetwork(LAYERS);
 
   // for input all positions
   // this.brain = brain || new NeuralNetwork([400, 3]);
@@ -35,6 +35,7 @@ function Culebrita(bugs, AI, brain) {
     }
 
     this.pieces.unshift(newPiece);
+    this.score += 0.02
     this.checkCrashOrWin();
   };
 
@@ -78,7 +79,7 @@ function Culebrita(bugs, AI, brain) {
       head.y < 0 ||
       head.y > BOARDCOLUMNS - 1
     ) {
-      this.score -= 5
+      // this.score -= 5
       this.gameOver(':::CRASHED:::')
     }
 
@@ -87,7 +88,7 @@ function Culebrita(bugs, AI, brain) {
       .find((p) => p.x === head.x && p.y === head.y);
 
     if (eatenItself) {
-      this.score -= 5
+      // this.score -= 5
       this.gameOver(':::CANNIBAL:::')
     }
 
@@ -98,7 +99,7 @@ function Culebrita(bugs, AI, brain) {
   };
 
   this.predict = () => {
-    if (AI) {
+    if (useAI) {
       NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
 
       const viewLength = 2;
@@ -163,7 +164,7 @@ function Culebrita(bugs, AI, brain) {
         const hasHead = head.x === v.x && head.y === v.y;
         const hasSnake = this.pieces.find((p) => p.x === v.x && p.y === v.y);
 
-        let content = hasBug ? 4 : hasWall ? 3 : hasSnake ? 2 : hasHead ? 1 : 0;
+        let content = hasBug ? 2 : hasWall ? 1 : hasSnake ? 1 : hasHead ? 0 : 0;
 
         return content;
       });
@@ -202,8 +203,6 @@ function Culebrita(bugs, AI, brain) {
   };
 
   this.gameOver = (msg) => {
-    // console.log(msg)
-    // console.log('score: ', this.score)
     this.lost = true
   }
 

@@ -31,8 +31,14 @@ const alpha = 0.2
 
 const canvasSize = 20
 
-const culeNum = 50
+const culeNum = 500
 
 const BOARDCOLUMNS = 20
 
 let partialBestBrain = {score: -100}
+
+const BUGSSIZE = 25
+
+const LAYERS = [15, 7, 7, 3]
+
+const useAI = true

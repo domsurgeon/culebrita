@@ -21,18 +21,19 @@ function animate({ canvas, ctx, frame, culebritas }) {
 
     const brain = partialBestBrain.brain;
 
-    console.log(partialBestBrain.score)
+    document.getElementById('best-score').innerHTML = Math.floor(partialBestBrain.score * 100) / 100
     startGames(brain);
   }
 }
 
 function startGames(brain) {
   const boardSize = canvasSize / PIECE;
-  const bugs = new Bugs(10, boardSize);
-  const AI = true;
+  const bugs = new Bugs(BUGSSIZE, boardSize);
+
+  const randomTest = Math.floor(culeNum / 3)
   const culebritas = new Array(culeNum)
     .fill(0)
-    .map((c) => new Culebrita([...bugs], AI, brain));
+    .map((c,i) => new Culebrita([...bugs], i > randomTest && brain));
   animate({ canvas, ctx: canvas.getContext("2d"), culebritas });
 }
 
