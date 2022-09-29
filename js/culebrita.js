@@ -1,21 +1,25 @@
 function Culebrita(bugs, brain) {
-  this.brain = brain || new NeuralNetwork(LAYERS);
-
   // for input all positions
   // this.brain = brain || new NeuralNetwork([400, 3]);
-
+  this.brain = brain || new NeuralNetwork(LAYERS);
   this.lost = false
   this.score = 0
   this.bugs = [...bugs];
+  this.pieces = [...culebritaStart];
+  this.direction = "up";
+  this.order = "up";
+
   this.drawBugs = (ctx) => {
     this.bugs.forEach((bug) => {
       drawPiece(ctx, bug, `rgba(200,200,200,${alpha})`);
     });
   };
 
-  this.pieces = [...culebritaStart];
-  this.direction = "up";
-  this.order = "up";
+  this.drawPieces = (ctx) => {
+    this.pieces.forEach((piece) => {
+      drawPiece(ctx, piece, `rgba(0,190,0,${alpha})`);
+    });
+  }
 
   this.movePieces = () => {
     this.settleOrder();
@@ -200,12 +204,6 @@ function Culebrita(bugs, brain) {
 
   this.gameOver = (msg) => {
     this.lost = true
-  }
-
-  this.drawPieces = (ctx) => {
-    this.pieces.forEach((piece) => {
-      drawPiece(ctx, piece, `rgba(0,190,0,${alpha})`);
-    });
   }
 
   this.update = ({ ctx }) => {
