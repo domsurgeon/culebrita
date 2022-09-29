@@ -1,25 +1,26 @@
-function Culebrita(bugs, brain) {
+function Culebrita(bugs, brain, isUser) {
   // for input all positions
   // this.brain = brain || new NeuralNetwork([400, 3]);
-  this.brain = brain || new NeuralNetwork(LAYERS);
-  this.lost = false
-  this.score = 0
+  this.brain = !isUser && (brain || new NeuralNetwork(LAYERS));
+  this.lost = false;
+  this.score = 0;
   this.bugs = [...bugs];
   this.pieces = [...culebritaStart];
   this.direction = "up";
   this.order = "up";
+  this.alpha = isUser ? 1 : alpha
 
   this.drawBugs = (ctx) => {
     this.bugs.forEach((bug) => {
-      drawPiece(ctx, bug, `rgba(200,200,200,${alpha})`);
+      drawPiece(ctx, bug, `rgba(200,200,200,${this.alpha})`, isUser);
     });
   };
 
   this.drawPieces = (ctx) => {
     this.pieces.forEach((piece) => {
-      drawPiece(ctx, piece, `rgba(0,190,0,${alpha})`);
+      drawPiece(ctx, piece, `rgba(0,190,0,${this.alpha})`, isUser);
     });
-  }
+  };
 
   this.movePieces = () => {
     this.settleOrder();
@@ -32,14 +33,14 @@ function Culebrita(bugs, brain) {
     if (!eaten) {
       this.pieces.pop();
     } else {
-      this.score += bugs.length - this.bugs.length // incremental
+      this.score += bugs.length - this.bugs.length; // incremental
       this.bugs = this.bugs.filter(
         (bug) => !(bug.x === newPiece.x && bug.y === newPiece.y)
       );
     }
 
     this.pieces.unshift(newPiece);
-    this.score += 0.02
+    this.score += 0.02;
     this.checkCrashOrWin();
   };
 
@@ -84,7 +85,7 @@ function Culebrita(bugs, brain) {
       head.y > BOARDCOLUMNS - 1
     ) {
       // this.score -= 5
-      this.gameOver(':::CRASHED:::')
+      this.gameOver(":::CRASHED:::");
     }
 
     const eatenItself = !!this.pieces
@@ -93,12 +94,12 @@ function Culebrita(bugs, brain) {
 
     if (eatenItself) {
       // this.score -= 5
-      this.gameOver(':::CANNIBAL:::')
+      this.gameOver(":::CANNIBAL:::");
     }
 
     if (this.bugs.length === 0) {
-      this.score += 50
-      this.gameOver(':::YOU-WON:::')
+      this.score += 50;
+      this.gameOver(":::YOU-WON:::");
     }
   };
 
@@ -164,7 +165,15 @@ function Culebrita(bugs, brain) {
         const hasHead = head.x === v.x && head.y === v.y;
         const hasSnake = this.pieces.find((p) => p.x === v.x && p.y === v.y);
 
-        let content = hasBug ? 1 : hasWall ? 0 : hasSnake ? 0 : hasHead ? 0.5 : 0.5;
+        let content = hasBug
+          ? 1
+          : hasWall
+          ? 0
+          : hasSnake
+          ? 0
+          : hasHead
+          ? 0.5
+          : 0.5;
 
         return content;
       });
@@ -199,18 +208,20 @@ function Culebrita(bugs, brain) {
         order = oup === 0 ? "up" : oup === 2 ? "down" : this.direction;
         break;
     }
-    return order
+    return order;
   };
 
   this.gameOver = (msg) => {
-    this.lost = true
-  }
+    this.lost = true;
+  };
 
   this.update = ({ ctx }) => {
-    this.predict()
+    if (!isUser) {
+      this.predict();
+    }
     this.movePieces();
     this.drawBugs(ctx);
-    this.drawPieces(ctx)
+    this.drawPieces(ctx);
   };
 
   return this;

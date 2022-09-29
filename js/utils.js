@@ -2,8 +2,8 @@ const culebritaStart = [
   { x: 9, y: 15 },
 ];
 
-const drawPiece = (ctx, {x, y}, color) => {
-  const size = canvasSize / BOARDCOLUMNS
+const drawPiece = (ctx, {x, y}, color, isUser) => {
+  const size = (isUser? canvasUserSize : canvasSize) / BOARDCOLUMNS
   // ctx.beginPath();
   ctx.fillStyle = color || "#FF0000";
   ctx.fillRect(x*size,y*size, size, size);
@@ -28,6 +28,7 @@ const softmax = X => {
 }
 
 const canvasSize = 20 // px
+const canvasUserSize = 60 // px
 const BOARDCOLUMNS = 20 // cols
 
 const INITBUGS = 25
@@ -48,3 +49,5 @@ const INPlen = rowsView * colsView
 // const INPlen = canvasSize * canvasSize // for all pixels
 const INPhalf = Math.floor(INPlen/2)
 const LAYERS = [INPlen, INPlen * 2, INPhalf, outputLen]
+
+const USERSPEED = 60

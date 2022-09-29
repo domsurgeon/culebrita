@@ -3,7 +3,7 @@ body {
   background-color: #999;
 }
 
-#canvas {
+canvas {
   display: block;
   margin: 20px auto;
   background-color: #111;
@@ -11,7 +11,19 @@ body {
   height: 250px;
 }
 
+canvas.user {
+  width: 400px;
+  height: 400px;
+}
+
 p {
   text-align: center;
   width: 100%;
+}
+
+h1 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 20px 0;
 }
