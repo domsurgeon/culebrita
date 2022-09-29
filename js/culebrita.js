@@ -6,7 +6,7 @@ function Culebrita(bugs, brain) {
 
   this.lost = false
   this.score = 0
-  this.bugs = bugs;
+  this.bugs = [...bugs];
   this.drawBugs = (ctx) => {
     this.bugs.forEach((bug) => {
       drawPiece(ctx, bug, `rgba(200,200,200,${alpha})`);
@@ -28,7 +28,7 @@ function Culebrita(bugs, brain) {
     if (!eaten) {
       this.pieces.pop();
     } else {
-      this.score += 1
+      this.score += bugs.length - this.bugs.length // incremental
       this.bugs = this.bugs.filter(
         (bug) => !(bug.x === newPiece.x && bug.y === newPiece.y)
       );

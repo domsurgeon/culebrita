@@ -3,13 +3,13 @@ const culebritaStart = [
 ];
 
 const drawPiece = (ctx, {x, y}, color) => {
-  const size = PIECE
+  const size = canvasSize / BOARDCOLUMNS
   // ctx.beginPath();
   ctx.fillStyle = color || "#FF0000";
   ctx.fillRect(x*size,y*size, size, size);
 };
 
-let PIECE = 1
+const alpha = 0.2
 
 const lerp = (a, b, interpolation) => a + (b - a) * interpolation
 
@@ -27,28 +27,24 @@ const softmax = X => {
   return scores.map(score => score / divisor)
 }
 
-const alpha = 0.2
+const canvasSize = 20 // px
+const BOARDCOLUMNS = 20 // cols
 
-const canvasSize = 20
-
-const culeNum = 500
-
-const BOARDCOLUMNS = 20
-
-let partialBestBrain = {score: -100}
-
-const BUGSSIZE = 25
-
+const INITBUGS = 25
+const INITCULEBRITAS = 500
 
 const useAI = true
 
+let partialBestBrain = {score: -100}
+
 let rounds = 0
 
-const viewLength = 3;
+const viewLength = 2;
+const outputLen = 3 // l c r
 
 const rowsView = viewLength + 1;
-const colsView = viewLength + viewLength + 1;
+const colsView = viewLength + rowsView;
 const INPlen = rowsView * colsView
+// const INPlen = canvasSize * canvasSize // for all pixels
 const INPhalf = Math.floor(INPlen/2)
-const outputLen = 3
-const LAYERS = [INPlen, INPhalf, INPhalf, outputLen]
+const LAYERS = [INPlen, INPlen * 2, INPhalf, outputLen]
