@@ -39,8 +39,16 @@ let partialBestBrain = {score: -100}
 
 const BUGSSIZE = 25
 
-const LAYERS = [15, 7, 7, 3]
 
 const useAI = true
 
 let rounds = 0
+
+const viewLength = 3;
+
+const rowsView = viewLength + 1;
+const colsView = viewLength + viewLength + 1;
+const INPlen = rowsView * colsView
+const INPhalf = Math.floor(INPlen/2)
+const outputLen = 3
+const LAYERS = [INPlen, INPhalf, INPhalf, outputLen]

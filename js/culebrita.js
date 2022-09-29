@@ -102,10 +102,6 @@ function Culebrita(bugs, brain) {
     if (useAI) {
       NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
 
-      const viewLength = 2;
-      const rowsView = viewLength + 1;
-      const colsView = viewLength + viewLength + 1;
-
       const head = this.pieces[0];
       let views = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
 
@@ -164,7 +160,7 @@ function Culebrita(bugs, brain) {
         const hasHead = head.x === v.x && head.y === v.y;
         const hasSnake = this.pieces.find((p) => p.x === v.x && p.y === v.y);
 
-        let content = hasBug ? 1 : hasWall ? -1 : hasSnake ? -1 : hasHead ? -2 : 0;
+        let content = hasBug ? 1 : hasWall ? 0 : hasSnake ? 0 : hasHead ? 0.5 : 0.5;
 
         return content;
       });
