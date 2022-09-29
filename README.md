@@ -1,7 +1,6 @@
 To use just open index.html with a browser
 
-Snake game
-- in AI mode
+- start playing immediately and beat AI's best score
+- refresh page to start again
 
-Upcoming
-- Play vs AI
+AI will live in local storage so it will improve every time you open culebrita!
