@@ -8,26 +8,21 @@ function Culebrita(bugs, brain, isUser) {
   this.pieces = [...culebritaStart];
   this.direction = "up";
   this.order = "up";
-  this.alpha = isUser ? 1 : alpha
-
-  this.drawBugs = (ctx) => {
-    this.bugs.forEach((bug) => {
-      drawPiece(ctx, bug, `rgba(200,200,200,${this.alpha})`, isUser);
-    });
-  };
-
-  this.drawPieces = (ctx) => {
-    this.pieces.forEach((piece) => {
-      drawPiece(ctx, piece, `rgba(0,190,0,${this.alpha})`, isUser);
-    });
-  };
+  this.alpha = isUser ? 1 : alpha;
 
   this.movePieces = () => {
     this.settleOrder();
 
-    let newPiece = this.pieceFromDirection();
-    let eaten = !!this.bugs.find(
-      (bug) => bug.x === newPiece.x && bug.y === newPiece.y
+    let newPosition = this.pieceFromDirection();
+    this.eatFrom(newPosition)
+    this.pieces.unshift(newPosition);
+    this.score += 0.02;
+    this.checkCrashOrWin();
+  };
+
+  this.eatFrom = (newPosition) => {
+    let eaten = this.bugs.find(
+      (bug) => bug.x === newPosition.x && bug.y === newPosition.y
     );
 
     if (!eaten) {
@@ -35,14 +30,10 @@ function Culebrita(bugs, brain, isUser) {
     } else {
       this.score += bugs.length - this.bugs.length; // incremental
       this.bugs = this.bugs.filter(
-        (bug) => !(bug.x === newPiece.x && bug.y === newPiece.y)
+        (bug) => !(bug.x === eaten.x && bug.y === eaten.y)
       );
     }
-
-    this.pieces.unshift(newPiece);
-    this.score += 0.02;
-    this.checkCrashOrWin();
-  };
+  }
 
   this.settleOrder = () => {
     if (
@@ -103,112 +94,124 @@ function Culebrita(bugs, brain, isUser) {
     }
   };
 
-  this.predict = () => {
-    if (useAI) {
-      NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
+  this.getViewPoints = () => {
+    // all board positions
+    // let snakeViewPoints = new Array(BOARDCOLUMNS * BOARDCOLUMNS).fill(0).map((v,i) => {
+    //   const x = i % BOARDCOLUMNS
+    //   const y = Math.floor(i / BOARDCOLUMNS) % BOARDCOLUMNS
+    //   return {
+    //     x, y
+    //   }
+    // });
+    const head = this.pieces[0];
+    let snakeViewPoints = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
 
-      const head = this.pieces[0];
-      let views = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
+    snakeViewPoints = snakeViewPoints.map((p, i) => {
+      let viu;
 
-      views = views.map((p, i) => {
-        let viu;
+      switch (this.direction) {
+        case "up":
+          viu = {
+            x: head.x - viewLength + (i % colsView),
+            y: head.y + viewLength - (Math.floor(i / colsView) % rowsView),
+          };
+          break;
 
-        switch (this.direction) {
-          case "up":
-            viu = {
-              x: head.x - viewLength + (i % colsView),
-              y: head.y + viewLength - (Math.floor(i / colsView) % rowsView),
-            };
-            break;
+        case "down":
+          viu = {
+            x: head.x + viewLength - (i % colsView),
+            y: head.y - viewLength + (Math.floor(i / colsView) % rowsView),
+          };
+          break;
 
-          case "down":
-            viu = {
-              x: head.x + viewLength - (i % colsView),
-              y: head.y - viewLength + (Math.floor(i / colsView) % rowsView),
-            };
-            break;
+        case "left":
+          viu = {
+            x: head.x - viewLength + (Math.floor(i / colsView) % rowsView),
+            y: head.y + viewLength - (i % colsView),
+          };
+          break;
 
-          case "left":
-            viu = {
-              x: head.x - viewLength + (Math.floor(i / colsView) % rowsView),
-              y: head.y + viewLength - (i % colsView),
-            };
-            break;
+        case "right":
+          viu = {
+            x: head.x + viewLength - (Math.floor(i / colsView) % rowsView),
+            y: head.y - viewLength + (i % colsView),
+          };
+          break;
+      }
 
-          case "right":
-            viu = {
-              x: head.x + viewLength - (Math.floor(i / colsView) % rowsView),
-              y: head.y - viewLength + (i % colsView),
-            };
-            break;
-        }
+      return viu;
+    });
 
-        return viu;
-      });
-
-      // input all positions
-      // let views = new Array(BOARDCOLUMNS * BOARDCOLUMNS).fill(0).map((v,i) => {
-      //   const x = i % BOARDCOLUMNS
-      //   const y = Math.floor(i / BOARDCOLUMNS) % BOARDCOLUMNS
-      //   return {
-      //     x, y
-      //   }
-      // });
-
-      const inputs = views.map((v) => {
-        const hasBug = this.bugs.find((b) => b.x === v.x && b.y === v.y);
-        const hasWall =
-          v.x < 0 ||
-          v.x > BOARDCOLUMNS - 1 ||
-          v.y < 0 ||
-          v.y > BOARDCOLUMNS - 1;
-        const hasHead = head.x === v.x && head.y === v.y;
-        const hasSnake = this.pieces.find((p) => p.x === v.x && p.y === v.y);
-
-        let content = hasBug
-          ? 1
-          : hasWall
-          ? 0
-          : hasSnake
-          ? 0
-          : hasHead
-          ? 0.5
-          : 0.5;
-
-        return content;
-      });
-
-      const outputs = NeuralNetwork.feedForward({
-        inputs,
-        network: this.brain,
-      });
-      const maxi = Math.max(...outputs);
-      const outputOrder = outputs.indexOf(maxi);
-
-      const order = this.orderFromOutput(outputOrder);
-
-      this.order = order;
-    }
+    return snakeViewPoints.map(this.getPointContent);
   };
 
-  this.orderFromOutput = (oup) => {
-    let order;
+  this.predict = () => {
+    NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
+
+    const inputs = this.getViewPoints();
+    const outputs = NeuralNetwork.feedForward({
+      inputs,
+      network: this.brain,
+    });
+
+    this.order = this.orderFromOutput(outputs);
+  };
+
+  this.getPointContent = (v) => {
+    const head = this.pieces[0];
+    const hasBug = this.bugs.find((b) => b.x === v.x && b.y === v.y);
+    const hasWall =
+      v.x < 0 || v.x > BOARDCOLUMNS - 1 || v.y < 0 || v.y > BOARDCOLUMNS - 1;
+    const hasSnake = this.pieces.slice(1).find((p) => p.x === v.x && p.y === v.y);
+    const hasHead = head.x === v.x && head.y === v.y;
+
+    let content = hasBug ? 1 : hasWall ? -1 : hasSnake ? -1 : hasHead ? 0 : 0;
+
+    return content;
+  };
+
+  this.orderFromOutput = (allOutputs) => {
+    const maxi = Math.max(...allOutputs);
+    const outputBestOrder = allOutputs.indexOf(maxi);
 
     switch (this.direction) {
       case "up":
-        order = oup === 0 ? "left" : oup === 2 ? "right" : this.direction;
-        break;
+        return outputBestOrder === 0
+          ? "left"
+          : outputBestOrder === 2
+          ? "right"
+          : this.direction;
       case "down":
-        order = oup === 0 ? "right" : oup === 2 ? "left" : this.direction;
-        break;
+        return outputBestOrder === 0
+          ? "right"
+          : outputBestOrder === 2
+          ? "left"
+          : this.direction;
       case "left":
-        order = oup === 0 ? "down" : oup === 2 ? "up" : this.direction;
-        break;
+        return outputBestOrder === 0
+          ? "down"
+          : outputBestOrder === 2
+          ? "up"
+          : this.direction;
       case "right":
-        order = oup === 0 ? "up" : oup === 2 ? "down" : this.direction;
-        break;
+        return outputBestOrder === 0
+          ? "up"
+          : outputBestOrder === 2
+          ? "down"
+          : this.direction;
     }
-    return order;
+  };
+
+  this.drawBugs = (ctx) => {
+    this.bugs.forEach((bug) => {
+      drawPiece(ctx, bug, `rgba(200,200,200,${this.alpha})`, isUser);
+    });
+  };
+
+  this.drawPieces = (ctx) => {
+    this.pieces.forEach((piece) => {
+      drawPiece(ctx, piece, `rgba(0,190,0,${this.alpha})`, isUser);
+    });
   };
 
   this.gameOver = (msg) => {
