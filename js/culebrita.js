@@ -5,8 +5,8 @@ function Culebrita(bugs, brain, isUser) {
   this.lost = false;
   this.score = 0;
   this.bugs = [...bugs];
-  this.pieces = [...culebritaStart];
-  this.direction = "up";
+  this.snakePieces = [...culebritaStart];
+  this.snakeDirection = "up";
   this.order = "up";
   this.alpha = isUser ? 1 : alpha;
 
@@ -15,7 +15,7 @@ function Culebrita(bugs, brain, isUser) {
 
     let newPosition = this.pieceFromDirection();
     this.eatFrom(newPosition)
-    this.pieces.unshift(newPosition);
+    this.snakePieces.unshift(newPosition);
     this.score += 0.02;
     this.checkCrashOrWin();
   };
@@ -26,7 +26,7 @@ function Culebrita(bugs, brain, isUser) {
     );
 
     if (!eaten) {
-      this.pieces.pop();
+      this.snakePieces.pop();
     } else {
       this.score += bugs.length - this.bugs.length; // incremental
       this.bugs = this.bugs.filter(
@@ -38,24 +38,25 @@ function Culebrita(bugs, brain, isUser) {
   this.settleOrder = () => {
     if (
       (this.order === "up" &&
-        (this.direction === "down" || this.direction === "up")) ||
+        (this.snakeDirection === "down" || this.snakeDirection === "up")) ||
       (this.order === "down" &&
-        (this.direction === "up" || this.direction === "down")) ||
+        (this.snakeDirection === "up" || this.snakeDirection === "down")) ||
       (this.order === "left" &&
-        (this.direction === "right" || this.direction === "left")) ||
+        (this.snakeDirection === "right" || this.snakeDirection === "left")) ||
       (this.order === "right" &&
-        (this.direction === "left" || this.direction === "right"))
+        (this.snakeDirection === "left" || this.snakeDirection === "right"))
     ) {
-      this.order = this.direction;
+      this.order = this.snakeDirection;
     } else {
-      this.direction = this.order;
+      // valid new order
+      this.snakeDirection = this.order;
     }
   };
 
   this.pieceFromDirection = () => {
-    const head = this.pieces[0];
+    const head = this.snakePieces[0];
 
-    switch (this.direction) {
+    switch (this.snakeDirection) {
       case "up":
         return { x: head.x, y: head.y - 1 };
       case "down":
@@ -68,7 +69,7 @@ function Culebrita(bugs, brain, isUser) {
   };
 
   this.checkCrashOrWin = () => {
-    const head = this.pieces[0];
+    const head = this.snakePieces[0];
     if (
       head.x < 0 ||
       head.x > BOARDCOLUMNS - 1 ||
@@ -79,7 +80,7 @@ function Culebrita(bugs, brain, isUser) {
       this.gameOver(":::CRASHED:::");
     }
 
-    const eatenItself = !!this.pieces
+    const eatenItself = !!this.snakePieces
       .slice(1)
       .find((p) => p.x === head.x && p.y === head.y);
 
@@ -103,13 +104,13 @@ function Culebrita(bugs, brain, isUser) {
     //     x, y
     //   }
     // });
-    const head = this.pieces[0];
+    const head = this.snakePieces[0];
     let snakeViewPoints = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
 
     snakeViewPoints = snakeViewPoints.map((p, i) => {
       let viu;
 
-      switch (this.direction) {
+      switch (this.snakeDirection) {
         case "up":
           viu = {
             x: head.x - viewLength + (i % colsView),
@@ -158,11 +159,11 @@ function Culebrita(bugs, brain, isUser) {
   };
 
   this.getPointContent = (v) => {
-    const head = this.pieces[0];
+    const head = this.snakePieces[0];
     const hasBug = this.bugs.find((b) => b.x === v.x && b.y === v.y);
     const hasWall =
       v.x < 0 || v.x > BOARDCOLUMNS - 1 || v.y < 0 || v.y > BOARDCOLUMNS - 1;
-    const hasSnake = this.pieces.slice(1).find((p) => p.x === v.x && p.y === v.y);
+    const hasSnake = this.snakePieces.slice(1).find((p) => p.x === v.x && p.y === v.y);
     const hasHead = head.x === v.x && head.y === v.y;
 
     let content = hasBug ? 1 : hasWall ? -1 : hasSnake ? -1 : hasHead ? 0 : 0;
@@ -174,31 +175,31 @@ function Culebrita(bugs, brain, isUser) {
     const maxi = Math.max(...allOutputs);
     const outputBestOrder = allOutputs.indexOf(maxi);
 
-    switch (this.direction) {
+    switch (this.snakeDirection) {
       case "up":
         return outputBestOrder === 0
           ? "left"
           : outputBestOrder === 2
           ? "right"
-          : this.direction;
+          : this.snakeDirection;
       case "down":
         return outputBestOrder === 0
           ? "right"
           : outputBestOrder === 2
           ? "left"
-          : this.direction;
+          : this.snakeDirection;
       case "left":
         return outputBestOrder === 0
           ? "down"
           : outputBestOrder === 2
           ? "up"
-          : this.direction;
+          : this.snakeDirection;
       case "right":
         return outputBestOrder === 0
           ? "up"
           : outputBestOrder === 2
           ? "down"
-          : this.direction;
+          : this.snakeDirection;
     }
   };
 
@@ -209,7 +210,7 @@ function Culebrita(bugs, brain, isUser) {
   };
 
   this.drawPieces = (ctx) => {
-    this.pieces.forEach((piece) => {
+    this.snakePieces.forEach((piece) => {
       drawPiece(ctx, piece, `rgba(0,190,0,${this.alpha})`, isUser);
     });
   };
