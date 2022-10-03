@@ -150,6 +150,7 @@ function Culebrita(bugs, brain, isUser) {
     NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
 
     const inputs = this.getViewPoints();
+
     const outputs = NeuralNetwork.feedForward({
       inputs,
       network: this.brain,

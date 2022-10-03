@@ -8,7 +8,7 @@ const canvasUserSize = 60 // px
 const INITBUGS = 25
 const INITCULEBRITAS = 500
 
-const viewLength = 3;
+const viewLength = 1;
 
 const rowsView = viewLength + 1;
 const colsView = viewLength + rowsView;
@@ -33,7 +33,7 @@ const INPhalf = Math.floor(INPlen/2)
 const INPquar = Math.floor(INPlen/4)
 const outputLen = 3 // l c r
 
-const LAYERS = [INPlen, INPlen, outputLen]
+const LAYERS = [INPlen, outputLen]
 
 const lerp = (a, b, interpolation) => a + (b - a) * interpolation
 
