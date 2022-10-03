@@ -1,5 +1,7 @@
+const bugs = new Bugs();
+
 function startAI(brain, canvas) {
-  const bugs = new Bugs();
+  // const bugs = new Bugs();
 
   const randomTest = Math.floor(INITCULEBRITAS / 3);
   const culebritas = new Array(INITCULEBRITAS)
@@ -10,7 +12,7 @@ function startAI(brain, canvas) {
 }
 
 function startUser(canvas) {
-  const bugs = new Bugs();
+  // const bugs = new Bugs();
   const culebrita = new Culebrita([...bugs], null, true);
 
   canvas.focus();

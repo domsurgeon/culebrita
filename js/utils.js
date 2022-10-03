@@ -5,10 +5,10 @@ const BOARDCOLUMNS = 20 // cols
 const canvasSize = 20 // px
 const canvasUserSize = 400 // px
 
-const INITBUGS = 25
-const INITCULEBRITAS = 100
+const INITBUGS = 15
+const INITCULEBRITAS = 1000
 
-const viewLength = 4;
+const viewLength = 2;
 
 const rowsView = viewLength + 1;
 const colsView = viewLength + rowsView;
@@ -17,8 +17,8 @@ const USERSPEED = 60
 const alpha = 1
 
 const culebritaStart = [
-  { x: Math.floor(BOARDCOLUMNS / 2), y: Math.floor(3 * BOARDCOLUMNS / 4) },
-  // { x: Math.floor(BOARDCOLUMNS / 2), y: Math.floor(BOARDCOLUMNS / 2) },
+  // { x: Math.floor(BOARDCOLUMNS / 2), y: Math.floor(3 * BOARDCOLUMNS / 4) },
+  { x: Math.floor(BOARDCOLUMNS / 2), y: Math.floor(BOARDCOLUMNS / 2) },
 ];
 
 const drawPiece = (ctx, {x, y}, color, isUser) => {
