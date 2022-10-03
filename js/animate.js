@@ -9,6 +9,8 @@ function animateAI({ canvas, ctx, culebritas }) {
     window.requestAnimationFrame(() =>
       animateAI({ canvas, ctx, culebritas: notLost })
     );
+
+    // setTimeout(() => animateAI({ canvas, ctx, culebritas: notLost }),2000);
   } else {
     const maxScore = Math.max(...culebritas.map(a=>a.score))
     const sortedBest = culebritas.filter( c => c.score === maxScore )[0]

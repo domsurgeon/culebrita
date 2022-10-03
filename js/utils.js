@@ -3,21 +3,22 @@ let partialBestBrain = {score: -100}
 
 const BOARDCOLUMNS = 20 // cols
 const canvasSize = 20 // px
-const canvasUserSize = 60 // px
+const canvasUserSize = 400 // px
 
 const INITBUGS = 25
-const INITCULEBRITAS = 500
+const INITCULEBRITAS = 100
 
-const viewLength = 1;
+const viewLength = 4;
 
 const rowsView = viewLength + 1;
 const colsView = viewLength + rowsView;
 
 const USERSPEED = 60
-const alpha = 0.2
+const alpha = 1
 
 const culebritaStart = [
   { x: Math.floor(BOARDCOLUMNS / 2), y: Math.floor(3 * BOARDCOLUMNS / 4) },
+  // { x: Math.floor(BOARDCOLUMNS / 2), y: Math.floor(BOARDCOLUMNS / 2) },
 ];
 
 const drawPiece = (ctx, {x, y}, color, isUser) => {

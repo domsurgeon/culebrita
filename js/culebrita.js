@@ -14,9 +14,9 @@ function Culebrita(bugs, brain, isUser) {
     this.settleOrder();
 
     let newPosition = this.pieceFromDirection();
-    this.eatFrom(newPosition)
+    this.eatFrom(newPosition);
     this.snakePieces.unshift(newPosition);
-    this.score += 0.02;
+    this.score -= 0.02;
     this.checkCrashOrWin();
   };
 
@@ -33,7 +33,7 @@ function Culebrita(bugs, brain, isUser) {
         (bug) => !(bug.x === eaten.x && bug.y === eaten.y)
       );
     }
-  }
+  };
 
   this.settleOrder = () => {
     if (
@@ -105,23 +105,23 @@ function Culebrita(bugs, brain, isUser) {
     //   }
     // });
     const head = this.snakePieces[0];
-    let snakeViewPoints = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
+    this.snakeViewPoints = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
 
-    snakeViewPoints = snakeViewPoints.map((p, i) => {
+    this.snakeViewPoints = this.snakeViewPoints.map((p, i) => {
       let viu;
 
       switch (this.snakeDirection) {
         case "up":
           viu = {
             x: head.x - viewLength + (i % colsView),
-            y: head.y + viewLength - (Math.floor(i / colsView) % rowsView),
+            y: head.y - viewLength + (Math.floor(i / colsView) % rowsView),
           };
           break;
 
         case "down":
           viu = {
             x: head.x + viewLength - (i % colsView),
-            y: head.y - viewLength + (Math.floor(i / colsView) % rowsView),
+            y: head.y + viewLength - (Math.floor(i / colsView) % rowsView),
           };
           break;
 
@@ -143,7 +143,7 @@ function Culebrita(bugs, brain, isUser) {
       return viu;
     });
 
-    return snakeViewPoints.map(this.getPointContent);
+    return this.snakeViewPoints.map(this.getPointContent);
   };
 
   this.predict = () => {
@@ -164,7 +164,9 @@ function Culebrita(bugs, brain, isUser) {
     const hasBug = this.bugs.find((b) => b.x === v.x && b.y === v.y);
     const hasWall =
       v.x < 0 || v.x > BOARDCOLUMNS - 1 || v.y < 0 || v.y > BOARDCOLUMNS - 1;
-    const hasSnake = this.snakePieces.slice(1).find((p) => p.x === v.x && p.y === v.y);
+    const hasSnake = this.snakePieces
+      .slice(1)
+      .find((p) => p.x === v.x && p.y === v.y);
     const hasHead = head.x === v.x && head.y === v.y;
 
     let content = hasBug ? 1 : hasWall ? -1 : hasSnake ? -1 : hasHead ? 0 : 0;
@@ -211,6 +213,11 @@ function Culebrita(bugs, brain, isUser) {
   };
 
   this.drawPieces = (ctx) => {
+    if(!isUser){
+    //   this.snakeViewPoints.forEach((v) => {
+    //     drawPiece(ctx, v, `rgba(0,100,100,${this.alpha})`, isUser);
+    //   });
+    }
     this.snakePieces.forEach((piece) => {
       drawPiece(ctx, piece, `rgba(0,190,0,${this.alpha})`, isUser);
     });
