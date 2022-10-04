@@ -5,10 +5,10 @@ const BOARDCOLUMNS = 20 // cols
 const canvasSize = 20 // px
 const canvasUserSize = 400 // px
 
-const INITBUGS = 15
-const INITCULEBRITAS = 1000
+const INITBUGS = 20
+const INITCULEBRITAS = 200
 
-const viewLength = 2;
+const viewLength = 3;
 
 const rowsView = viewLength + 1;
 const colsView = viewLength + rowsView;
@@ -28,8 +28,10 @@ const drawPiece = (ctx, {x, y}, color, isUser) => {
   ctx.fillRect(x*size,y*size, size, size);
 };
 
+
 const INPlen = rowsView * colsView
 // const INPlen = canvasSize * canvasSize // for all pixels
+
 const INPhalf = Math.floor(INPlen/2)
 const INPquar = Math.floor(INPlen/4)
 const outputLen = 3 // l c r

@@ -12,14 +12,14 @@ class NeuralNetwork {
   static feedForward({ inputs, network }) {
     // eslint-disable-next-line no-undef
     let outputs = Layer.feedForward({
-      activate: relu,
+      activate: sigmoid,
       inputs,
       layer: network.layers[0],
     });
     for (let i = 1; i < network.layers.length; i++) {
       // eslint-disable-next-line no-undef
       outputs = Layer.feedForward({
-        activate: i === network.layers.length - 1 ? (x) => x : relu,
+        activate: i === network.layers.length - 1 ? (x) => x : sigmoid,
         inputs: outputs,
         layer: network.layers[i],
       });

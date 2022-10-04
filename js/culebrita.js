@@ -1,6 +1,5 @@
 function Culebrita(bugs, brain, isUser) {
   // for input all positions
-  // this.brain = brain || new NeuralNetwork([400, 3]);
   this.brain = !isUser && (brain || new NeuralNetwork(LAYERS));
   this.lost = false;
   this.score = 0;
@@ -17,7 +16,7 @@ function Culebrita(bugs, brain, isUser) {
     this.eatFrom(newPosition);
     this.snakePieces.unshift(newPosition);
     this.score -= 0.02;
-    this.checkCrashOrWin();
+    this.endGame();
   };
 
   this.eatFrom = (newPosition) => {
@@ -68,7 +67,7 @@ function Culebrita(bugs, brain, isUser) {
     }
   };
 
-  this.checkCrashOrWin = () => {
+  this.endGame = () => {
     const head = this.snakePieces[0];
     if (
       head.x < 0 ||
@@ -93,17 +92,22 @@ function Culebrita(bugs, brain, isUser) {
       this.score += 50;
       this.gameOver(":::YOU-WON:::");
     }
+
+    if(this.score < -5){
+      this.gameOver()
+    }
   };
 
   this.getViewPoints = () => {
     // all board positions
-    // let snakeViewPoints = new Array(BOARDCOLUMNS * BOARDCOLUMNS).fill(0).map((v,i) => {
+    // this.snakeViewPoints = new Array(BOARDCOLUMNS * BOARDCOLUMNS).fill(0).map((v,i) => {
     //   const x = i % BOARDCOLUMNS
     //   const y = Math.floor(i / BOARDCOLUMNS) % BOARDCOLUMNS
     //   return {
     //     x, y
     //   }
     // });
+
     const head = this.snakePieces[0];
     this.snakeViewPoints = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
 
@@ -214,9 +218,9 @@ function Culebrita(bugs, brain, isUser) {
 
   this.drawPieces = (ctx) => {
     if(!isUser){
-    //   this.snakeViewPoints.forEach((v) => {
-    //     drawPiece(ctx, v, `rgba(0,100,100,${this.alpha})`, isUser);
-    //   });
+      // this.snakeViewPoints.forEach((v) => {
+      //   drawPiece(ctx, v, `rgba(0,100,100,${this.alpha})`, isUser);
+      // });
     }
     this.snakePieces.forEach((piece) => {
       drawPiece(ctx, piece, `rgba(0,190,0,${this.alpha})`, isUser);
@@ -231,7 +235,7 @@ function Culebrita(bugs, brain, isUser) {
     if (!isUser) {
       this.predict();
     }
-    this.movePieces();
+    this.movePieces();// move on allpos input
     this.drawBugs(ctx);
     this.drawPieces(ctx);
   };
