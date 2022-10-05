@@ -32,11 +32,13 @@ class NeuralNetwork {
     for (const layer of network.layers) {
       for (let i = 0; i < layer.biases.length; i++) {
         // eslint-disable-next-line no-undef
+        debugger
         layer.biases[i] = lerp(layer.biases[i], Math.random(), amount);
       }
       for (let i = 0; i < layer.weights.length; i++) {
         for (let j = 0; j < layer.weights[i].length; j++) {
           // eslint-disable-next-line no-undef
+          debugger
           layer.weights[i][j] = lerp(
             layer.weights[i][j],
             Math.random(),

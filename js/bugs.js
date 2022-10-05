@@ -8,7 +8,7 @@ function Bugs() {
   }));
 
   positions = positions.filter(
-    (b) => !(b.x === culebritaStart[0].x && b.y === culebritaStart[0].y)
+    (b) => !(b.x === culebriyaStart[0].x && b.y === culebriyaStart[0].y)
   );
 
   while (bugsCount--) {

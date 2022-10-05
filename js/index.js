@@ -7,12 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   canvasuser.height = canvasUserSize;
   canvasuser.width = canvasUserSize;
 
-  const brainStr = localStorage.getItem("brain");
-  localStorage.clear()
-  const brain = brainStr && JSON.parse(brainStr);
-  if (brainStr) {
-    console.log("Loaded brain from LS");
-  }
-  startAI(brain, canvas);
+  startAI(canvas);
   startUser(canvasuser)
 });
