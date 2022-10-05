@@ -61,5 +61,5 @@ const save = (winner) => {
   localStorage.setItem("brain", brainStr);
   localStorage.setItem("best-score", winner.score);
 
-  console.log("Saved brain on LS");
+  console.log("Saved", winner.score);
 };

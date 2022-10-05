@@ -22,6 +22,18 @@ function Culebriya(bugs, brain, isUser) {
     this.order = "up";
   }
 
+  this.reload = (bestBrain) => {
+    this.brain = bestBrain
+    this.lost = false
+    this.win = false
+    this.score = 0
+    this.reSpawns = 0
+    this.bugs = [...bugs];
+    this.snakePieces = [...culebriyaStart];
+    this.snakeDirection = "up";
+    this.order = "up";
+  }
+
   this.movePieces = () => {
     this.settleOrder();
 
@@ -236,10 +248,10 @@ function Culebriya(bugs, brain, isUser) {
 
   this.die = (msg) => {
     if (!isUser && this.bugs.length > 0) {
-      this.snakePieces = [...culebriyaStart];
-      this.reSpawns++
-      this.score -= this.reSpawns
-      return;
+      // this.snakePieces = [...culebriyaStart];
+      // this.reSpawns++
+      // this.score -= this.reSpawns
+      // return;
     }
 
     this.lost = true;

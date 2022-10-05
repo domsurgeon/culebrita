@@ -6,7 +6,7 @@ function startAI(canvas) {
 
   const brainFromStorage = brainStr && JSON.parse(brainStr);
   if (brainStr) {
-    console.log("Loaded brain from LS");
+    console.log("Loaded");
   }
 
   const randomTest = Math.floor(INITCULEBRIYAS / 3);

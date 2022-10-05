@@ -4,15 +4,10 @@ function animateAI({ canvas, ctx, culebriyas }) {
     culebriya.update({ ctx });
   });
 
-  const wins = culebriyas.filter((c) => c.win);
-  if (wins.length > 0) {
+  const handleScore = (wins) => {
     const maxScore = Math.max(...wins.map((w) => w.score));
     const winner = wins.filter((w) => w.score === maxScore)[0];
     let bestScore = (localStorage.getItem("best-score") || "-100") * 1;
-    const bugs = new Bugs();
-
-    const brainStr = localStorage.getItem("brain");
-    let bestBrain = brainStr && JSON.parse(brainStr);
 
     if (maxScore > bestScore) {
       save(winner)
@@ -22,12 +17,27 @@ function animateAI({ canvas, ctx, culebriyas }) {
     }
 
     document.getElementById("best-score").innerHTML =
-      Math.floor(bestScore * 100) / 100;
-
-    const randomTest = Math.floor(INITCULEBRIYAS / 3);
-    culebriyas.forEach((c, i) => c.recharge(i > randomTest && bestBrain, bugs));
+    Math.floor(bestScore * 100) / 100;
   }
-  culebriyas
+
+  const wins = culebriyas.filter((c) => c.win);
+  const lost = culebriyas.filter( c => c.lost )
+
+  const brainStr = localStorage.getItem("brain");
+  let bestBrain = brainStr && JSON.parse(brainStr);
+
+  if (wins.length > 0) {
+    handleScore(wins)
+    const randomTest = Math.floor(INITCULEBRIYAS / 3);
+    const bugs = new Bugs();
+    culebriyas.forEach((c, i) => c.recharge(i > randomTest && bestBrain, bugs));
+  } else {
+    if(lost.length) {
+      handleScore(lost)
+      lost.forEach( c => c.reload(bestBrain) )
+    }
+  }
+
   window.requestAnimationFrame(() => animateAI({ canvas, ctx, culebriyas }));
 }
 
