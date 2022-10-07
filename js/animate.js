@@ -10,31 +10,31 @@ function animateAI({ canvas, ctx, culebriyas }) {
     let bestScore = (localStorage.getItem("best-score") || "-100") * 1;
 
     if (maxScore > bestScore) {
-      save(winner)
+      save(winner);
 
       bestBrain = winner.brain;
       bestScore = maxScore;
     }
 
     document.getElementById("best-score").innerHTML =
-    Math.floor(bestScore * 100) / 100;
-  }
+      Math.floor(bestScore * 100) / 100;
+  };
 
   const wins = culebriyas.filter((c) => c.win);
-  const lost = culebriyas.filter( c => c.lost )
+  const lost = culebriyas.filter((c) => c.lost);
 
   const brainStr = localStorage.getItem("brain");
   let bestBrain = brainStr && JSON.parse(brainStr);
 
   if (wins.length > 0) {
-    handleScore(wins)
+    handleScore(wins);
     const randomTest = Math.floor(INITCULEBRIYAS / 3);
     const bugs = new Bugs();
     culebriyas.forEach((c, i) => c.recharge(i > randomTest && bestBrain, bugs));
   } else {
-    if(lost.length) {
-      handleScore(lost)
-      lost.forEach( c => c.reload(bestBrain) )
+    if (lost.length) {
+      handleScore(lost);
+      lost.forEach((c) => c.reload(bestBrain));
     }
   }
 

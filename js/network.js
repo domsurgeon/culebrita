@@ -12,14 +12,14 @@ class NeuralNetwork {
   static feedForward({ inputs, network }) {
     // eslint-disable-next-line no-undef
     let outputs = Layer.feedForward({
-      activate: sigmoid,
+      activate: relu,
       inputs,
       layer: network.layers[0],
     });
     for (let i = 1; i < network.layers.length; i++) {
       // eslint-disable-next-line no-undef
       outputs = Layer.feedForward({
-        activate: i === network.layers.length - 1 ? (x) => x : sigmoid,
+        activate: i === network.layers.length - 1 ? (x) => x : relu,
         inputs: outputs,
         layer: network.layers[i],
       });
@@ -28,17 +28,21 @@ class NeuralNetwork {
     return softmax(outputs);
   }
 
+  // (1 - 1 / (1 + RS))
+
   static mutate({ amount, network }) {
     for (const layer of network.layers) {
-      for (let i = 0; i < layer.biases.length; i++) {
+      for (let o = 0; o < layer.biases.length; o++) {
         // eslint-disable-next-line no-undef
-        layer.biases[i] = lerp(layer.biases[i], Math.random(), amount);
+        // debugger
+        layer.biases[o] = lerp(layer.biases[o], Math.random(), amount);
       }
       for (let i = 0; i < layer.weights.length; i++) {
-        for (let j = 0; j < layer.weights[i].length; j++) {
+        for (let o = 0; o < layer.weights[i].length; o++) {
           // eslint-disable-next-line no-undef
-          layer.weights[i][j] = lerp(
-            layer.weights[i][j],
+          // debugger
+          layer.weights[i][o] = lerp(
+            layer.weights[i][o],
             Math.random(),
             amount
           );
@@ -64,23 +68,23 @@ class Layer {
     for (let i = 0; i < layer.inputs.length; i++) {
       layer.inputs[i] = inputs[i];
     }
-    for (let i = 0; i < layer.outputs.length; i++) {
+    for (let o = 0; o < layer.outputs.length; o++) {
       let sum = 0;
-      for (let j = 0; j < layer.inputs.length; j++) {
-        sum += layer.inputs[j] * layer.weights[j][i];
+      for (let i = 0; i < layer.inputs.length; i++) {
+        sum += layer.inputs[i] * layer.weights[i][o];
       }
-      layer.outputs[i] = activate(sum + layer.biases[i]);
+      layer.outputs[o] = activate(sum + layer.biases[o]);
     }
     return layer.outputs;
   }
 
   static randomize(layer) {
-    for (let i = 0; i < layer.biases.length; i++) {
-      layer.biases[i] = Math.random();
+    for (let o = 0; o < layer.biases.length; o++) {
+      layer.biases[o] = Math.random();
     }
     for (let i = 0; i < layer.inputs.length; i++) {
-      for (let j = 0; j < layer.outputs.length; j++) {
-        layer.weights[i][j] = Math.random();
+      for (let o = 0; o < layer.outputs.length; o++) {
+        layer.weights[i][o] = Math.random();
       }
     }
   }

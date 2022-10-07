@@ -7,9 +7,9 @@ const canvasSize = UNI; // px
 const canvasUserSize = 400; // px
 
 const INITBUGS = UNI;
-const INITCULEBRIYAS = 500;
+const INITCULEBRIYAS = 200;
 
-const viewLength = 3;
+const viewLength = 1;
 
 const rowsView = viewLength + 1;
 const colsView = viewLength + rowsView;
@@ -29,14 +29,11 @@ const drawPiece = (ctx, { x, y }, color, isUser) => {
   ctx.fillRect(x * size, y * size, size, size);
 };
 
-const INPlen = rowsView * colsView;
+const outputLen = 3; // l c r
+const INPlen = rowsView * colsView * 2;
 // const INPlen = canvasSize * canvasSize // for all pixels
 
-const INPhalf = Math.floor(INPlen / 2);
-const INPquar = Math.floor(INPlen / 4);
-const outputLen = 3; // l c r
-
-const LAYERS = [INPlen, outputLen];
+const LAYERS = [INPlen, INPlen * 2, 4, outputLen];
 
 const lerp = (a, b, interpolation) => a + (b - a) * interpolation;
 

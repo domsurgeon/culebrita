@@ -40,7 +40,7 @@ function Culebriya(bugs, brain, isUser) {
     let newPosition = this.pieceFromDirection();
     this.eatFrom(newPosition);
     this.snakePieces.unshift(newPosition);
-    this.score -= 0.02;
+    // this.score -= 0.02;
     this.newState();
   };
 
@@ -52,7 +52,8 @@ function Culebriya(bugs, brain, isUser) {
     if (!eaten) {
       this.snakePieces.pop();
     } else {
-      this.score += bugs.length - this.bugs.length; // incremental
+      // this.score += bugs.length - this.bugs.length; // incremental
+      this.score += 10;
       this.bugs = this.bugs.filter(
         (bug) => !(bug.x === eaten.x && bug.y === eaten.y)
       );
@@ -117,7 +118,7 @@ function Culebriya(bugs, brain, isUser) {
     }
   };
 
-  this.getViewPoints = () => {
+  this.getViewPoints = (content) => {
     // all board positions
     // this.snakeViewPoints = new Array(BOARDCOLUMNS * BOARDCOLUMNS).fill(0).map((v,i) => {
     //   const x = i % BOARDCOLUMNS
@@ -166,13 +167,15 @@ function Culebriya(bugs, brain, isUser) {
       return viu;
     });
 
-    return this.snakeViewPoints.map(this.getPointContent);
+    return this.snakeViewPoints.map((v) => this.getPointContent(v, content));
   };
 
   this.predict = () => {
     NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
 
-    const inputs = this.getViewPoints();
+    const rewardPoints = this.getViewPoints('rewards');
+    const dangerPoints = this.getViewPoints('danger');
+    const inputs = [ ... rewardPoints, ...dangerPoints ]
 
     const outputs = NeuralNetwork.feedForward({
       inputs,
@@ -182,17 +185,17 @@ function Culebriya(bugs, brain, isUser) {
     this.order = this.orderFromOutput(outputs);
   };
 
-  this.getPointContent = (v) => {
-    const head = this.snakePieces[0];
+  this.getPointContent = (v, contentFilter) => {
     const hasBug = this.bugs.find((b) => b.x === v.x && b.y === v.y);
     const hasWall =
       v.x < 0 || v.x > BOARDCOLUMNS - 1 || v.y < 0 || v.y > BOARDCOLUMNS - 1;
     const hasSnake = this.snakePieces
       .slice(1)
       .find((p) => p.x === v.x && p.y === v.y);
-    const hasHead = head.x === v.x && head.y === v.y;
 
-    let content = hasBug ? 1 : hasWall ? -1 : hasSnake ? -1 : hasHead ? 0 : 0;
+    let content = 0;
+    content = contentFilter === 'rewards' && hasBug ? 1 : content;
+    content = contentFilter === 'dangers' && (hasSnake || hasWall) ? 1 : content;
 
     return content;
   };
@@ -253,6 +256,7 @@ function Culebriya(bugs, brain, isUser) {
       // this.score -= this.reSpawns
       // return;
     }
+    this.score -= 10
 
     this.lost = true;
   };
