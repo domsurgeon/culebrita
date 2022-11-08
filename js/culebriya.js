@@ -170,7 +170,7 @@ function Culebriya(bugs, brain, isUser) {
       network: this.brain,
     });
 
-    const randDec = Math.random() >= 0;
+    const randDec = Math.random() >= 0.01;
     this.order = this.orderFromOutput(randDec ? inputs : outputs);
   };
 
