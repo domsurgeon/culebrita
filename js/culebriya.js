@@ -192,6 +192,7 @@ function Culebriya(bugs, brain, isUser) {
     const maxi = Math.max(...allOutputs);
     const mini = Math.min(...allOutputs);
     // const outputBestOrder = allOutputs.indexOf(maxi);
+
     const outputBestOrder =
       maxi > 0
         ? allOutputs.indexOf(maxi)
