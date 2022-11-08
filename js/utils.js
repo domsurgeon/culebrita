@@ -7,12 +7,16 @@ const canvasSize = UNI; // px
 const canvasUserSize = 400; // px
 
 const INITBUGS = UNI;
-const INITCULEBRIYAS = 200;
+const INITCULEBRIYAS = 1; // 460
+
+let FRAMES = 0
 
 const viewLength = 1;
 
 const rowsView = viewLength + 1;
 const colsView = viewLength + rowsView;
+
+const VaVAMLTP = 1
 
 const USERSPEED = 60;
 const alpha = 1;
@@ -30,15 +34,18 @@ const drawPiece = (ctx, { x, y }, color, isUser) => {
 };
 
 const outputLen = 3; // l c r
-const INPlen = rowsView * colsView * 2;
+const inputLen = 3; // l c r x content / distance
+// const INPlen = rowsView * colsView * 2;
 // const INPlen = canvasSize * canvasSize // for all pixels
 
-const LAYERS = [INPlen, INPlen * 2, 4, outputLen];
+// const LAYERS = [inputLen, inputLen * outputLen, outputLen + 1, outputLen];
+const LAYERS = [inputLen, Math.pow(inputLen, 2),outputLen];
 
 const lerp = (a, b, interpolation) => a + (b - a) * interpolation;
 
+const d = 0.05
 // eslint-disable-next-line no-unused-vars
-const relu = (x) => Math.max(0, x);
+const relu = (x) => Math.max(d*x, x);
 
 // eslint-disable-next-line no-unused-vars
 const sigmoid = (x) => 1 / (1 + Math.exp(-x));
@@ -58,5 +65,10 @@ const save = (winner) => {
   localStorage.setItem("brain", brainStr);
   localStorage.setItem("best-score", winner.score);
 
-  console.log("Saved", winner.score);
+  // console.log("Saved", winner.score);
 };
+
+function cl (){
+  localStorage.clear()
+  location.reload()
+}

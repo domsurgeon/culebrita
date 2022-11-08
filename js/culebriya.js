@@ -1,37 +1,28 @@
 function Culebriya(bugs, brain, isUser) {
   this.brain = !isUser && (brain || new NeuralNetwork(LAYERS));
-  this.lost = false;
-  this.win = false;
-  this.score = 0;
-  this.reSpawns = 0
   this.bugs = [...bugs];
-  this.snakePieces = [...culebriyaStart];
-  this.snakeDirection = "up";
-  this.order = "up";
   this.alpha = isUser ? 1 : alpha;
+  reset(this);
 
   this.recharge = (newBrain, bugis) => {
+    reset(this);
     this.brain = newBrain || new NeuralNetwork(LAYERS);
-    this.lost = false
-    this.win = false
-    this.score = 0
-    this.reSpawns = 0
     this.bugs = [...bugis];
-    this.snakePieces = [...culebriyaStart];
-    this.snakeDirection = "up";
-    this.order = "up";
-  }
+  };
 
-  this.reload = (bestBrain) => {
-    this.brain = bestBrain
-    this.lost = false
-    this.win = false
-    this.score = 0
-    this.reSpawns = 0
+  this.reload = () => {
+    reset(this);
     this.bugs = [...bugs];
-    this.snakePieces = [...culebriyaStart];
-    this.snakeDirection = "up";
-    this.order = "up";
+  };
+
+  function reset(cule) {
+    cule.lost = false;
+    cule.win = false;
+    cule.score = 0;
+    cule.reSpawns = 0;
+    cule.snakePieces = [...culebriyaStart];
+    cule.snakeDirection = "up";
+    cule.order = "up";
   }
 
   this.movePieces = () => {
@@ -53,7 +44,7 @@ function Culebriya(bugs, brain, isUser) {
       this.snakePieces.pop();
     } else {
       // this.score += bugs.length - this.bugs.length; // incremental
-      this.score += 10;
+      this.score += 1;
       this.bugs = this.bugs.filter(
         (bug) => !(bug.x === eaten.x && bug.y === eaten.y)
       );
@@ -113,79 +104,77 @@ function Culebriya(bugs, brain, isUser) {
     }
 
     if (this.bugs.length === 0) {
-      this.win = true
-      console.log(this.reSpawns)
+      this.win = true;
+      console.log(this.reSpawns);
     }
   };
 
-  this.getViewPoints = (content) => {
-    // all board positions
-    // this.snakeViewPoints = new Array(BOARDCOLUMNS * BOARDCOLUMNS).fill(0).map((v,i) => {
-    //   const x = i % BOARDCOLUMNS
-    //   const y = Math.floor(i / BOARDCOLUMNS) % BOARDCOLUMNS
-    //   return {
-    //     x, y
-    //   }
-    // });
-
+  this.getVectorsView = () => {
     const head = this.snakePieces[0];
-    this.snakeViewPoints = new Array(rowsView * colsView).fill(0); // 180 deg x viewLength
+    const vectors = new Array(outputLen).fill(0);
 
-    this.snakeViewPoints = this.snakeViewPoints.map((p, i) => {
-      let viu;
+    for (let o = 0; o < outputLen; o++) {
+      let nothing = true;
+      let p = 1;
 
-      switch (this.snakeDirection) {
-        case "up":
-          viu = {
-            x: head.x - viewLength + (i % colsView),
-            y: head.y - viewLength + (Math.floor(i / colsView) % rowsView),
-          };
-          break;
+      while (nothing) {
+        let v;
 
-        case "down":
-          viu = {
-            x: head.x + viewLength - (i % colsView),
-            y: head.y + viewLength - (Math.floor(i / colsView) % rowsView),
-          };
-          break;
+        switch (this.snakeDirection) {
+          case "up":
+            v = {
+              y: head.y + (o === 1 ? -p : 0),
+              x: head.x + (o === 1 ? 0 : (o === 0 ? -1 : 1) * p),
+            };
+            break;
+          case "down":
+            v = {
+              y: head.y + (o === 1 ? p : 0),
+              x: head.x + (o === 1 ? 0 : (o === 0 ? 1 : -1) * p),
+            };
+            break;
+          case "left":
+            v = {
+              y: head.y + (o === 1 ? 0 : (o === 0 ? 1 : -1) * p),
+              x: head.x + (o === 1 ? -p : 0),
+            };
+            break;
+          case "right":
+            v = {
+              y: head.y + (o === 1 ? 0 : (o === 0 ? -1 : 1) * p),
+              x: head.x + (o === 1 ? p : 0),
+            };
+            break;
+        }
 
-        case "left":
-          viu = {
-            x: head.x - viewLength + (Math.floor(i / colsView) % rowsView),
-            y: head.y + viewLength - (i % colsView),
-          };
-          break;
+        const [hasAny, val] = this.getPointContent(v);
 
-        case "right":
-          viu = {
-            x: head.x + viewLength - (Math.floor(i / colsView) % rowsView),
-            y: head.y - viewLength + (i % colsView),
-          };
-          break;
+        if (hasAny) {
+          const vector = (val * VaVAMLTP) / p;
+          vectors[o] = vector;
+          nothing = false;
+        }
+        p++;
       }
+    }
 
-      return viu;
-    });
-
-    return this.snakeViewPoints.map((v) => this.getPointContent(v, content));
+    return vectors;
   };
 
   this.predict = () => {
-    NeuralNetwork.mutate({ amount: Math.random(), network: this.brain });
+    NeuralNetwork.mutate({ amount: Math.random(), network: this.brain }); // amount decrease ?
 
-    const rewardPoints = this.getViewPoints('rewards');
-    const dangerPoints = this.getViewPoints('danger');
-    const inputs = [ ... rewardPoints, ...dangerPoints ]
-
+    const inputs = this.getVectorsView();
     const outputs = NeuralNetwork.feedForward({
       inputs,
       network: this.brain,
     });
 
-    this.order = this.orderFromOutput(outputs);
+    const randDec = Math.random() >= 0;
+    this.order = this.orderFromOutput(randDec ? inputs : outputs);
   };
 
-  this.getPointContent = (v, contentFilter) => {
+  this.getPointContent = (v) => {
     const hasBug = this.bugs.find((b) => b.x === v.x && b.y === v.y);
     const hasWall =
       v.x < 0 || v.x > BOARDCOLUMNS - 1 || v.y < 0 || v.y > BOARDCOLUMNS - 1;
@@ -193,16 +182,22 @@ function Culebriya(bugs, brain, isUser) {
       .slice(1)
       .find((p) => p.x === v.x && p.y === v.y);
 
-    let content = 0;
-    content = contentFilter === 'rewards' && hasBug ? 1 : content;
-    content = contentFilter === 'dangers' && (hasSnake || hasWall) ? 1 : content;
-
-    return content;
+    return [
+      hasBug || hasWall || hasSnake || false,
+      hasBug ? 1 : hasWall || hasSnake ? -1 : 0,
+    ];
   };
 
   this.orderFromOutput = (allOutputs) => {
     const maxi = Math.max(...allOutputs);
-    const outputBestOrder = allOutputs.indexOf(maxi);
+    const mini = Math.min(...allOutputs);
+    // const outputBestOrder = allOutputs.indexOf(maxi);
+    const outputBestOrder =
+      maxi > 0
+        ? allOutputs.indexOf(maxi)
+        : mini !== -1
+        ? allOutputs.indexOf(mini)
+        : allOutputs.indexOf(maxi);
 
     switch (this.snakeDirection) {
       case "up":
@@ -256,7 +251,7 @@ function Culebriya(bugs, brain, isUser) {
       // this.score -= this.reSpawns
       // return;
     }
-    this.score -= 10
+    // this.score -= 10;
 
     this.lost = true;
   };

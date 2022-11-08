@@ -1,4 +1,5 @@
 function animateAI({ canvas, ctx, culebriyas }) {
+  // FRAMES++
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   culebriyas.forEach((culebriya) => {
     culebriya.update({ ctx });
@@ -9,6 +10,7 @@ function animateAI({ canvas, ctx, culebriyas }) {
     const winner = wins.filter((w) => w.score === maxScore)[0];
     let bestScore = (localStorage.getItem("best-score") || "-100") * 1;
 
+    console.log(winner.score)
     if (maxScore > bestScore) {
       save(winner);
 
@@ -34,7 +36,7 @@ function animateAI({ canvas, ctx, culebriyas }) {
   } else {
     if (lost.length) {
       handleScore(lost);
-      lost.forEach((c) => c.reload(bestBrain));
+      lost.forEach((c) => c.reload());
     }
   }
 

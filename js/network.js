@@ -12,7 +12,7 @@ class NeuralNetwork {
   static feedForward({ inputs, network }) {
     // eslint-disable-next-line no-undef
     let outputs = Layer.feedForward({
-      activate: relu,
+      activate: relu, // lost negative inputs?
       inputs,
       layer: network.layers[0],
     });
@@ -34,15 +34,13 @@ class NeuralNetwork {
     for (const layer of network.layers) {
       for (let o = 0; o < layer.biases.length; o++) {
         // eslint-disable-next-line no-undef
-        // debugger
         layer.biases[o] = lerp(layer.biases[o], Math.random(), amount);
       }
-      for (let i = 0; i < layer.weights.length; i++) {
-        for (let o = 0; o < layer.weights[i].length; o++) {
+      for (let o = 0; o < layer.weights.length; o++) {
+        for (let i = 0; i < layer.weights[o].length; i++) {
           // eslint-disable-next-line no-undef
-          // debugger
-          layer.weights[i][o] = lerp(
-            layer.weights[i][o],
+          layer.weights[o][i] = lerp(
+            layer.weights[o][i],
             Math.random(),
             amount
           );
@@ -57,10 +55,9 @@ class Layer {
     this.biases = new Array(outputCount);
     this.inputs = new Array(inputCount);
     this.outputs = new Array(outputCount);
-    this.weights = [];
-    for (let i = 0; i < inputCount; i++) {
-      this.weights[i] = new Array(outputCount);
-    }
+    this.weights = new Array(outputCount)
+      .fill(0)
+      .map(() => new Array(inputCount));
     Layer.randomize(this);
   }
 
@@ -70,8 +67,9 @@ class Layer {
     }
     for (let o = 0; o < layer.outputs.length; o++) {
       let sum = 0;
+
       for (let i = 0; i < layer.inputs.length; i++) {
-        sum += layer.inputs[i] * layer.weights[i][o];
+        sum += layer.inputs[i] * layer.weights[o][i];
       }
       layer.outputs[o] = activate(sum + layer.biases[o]);
     }
@@ -81,10 +79,8 @@ class Layer {
   static randomize(layer) {
     for (let o = 0; o < layer.biases.length; o++) {
       layer.biases[o] = Math.random();
-    }
-    for (let i = 0; i < layer.inputs.length; i++) {
-      for (let o = 0; o < layer.outputs.length; o++) {
-        layer.weights[i][o] = Math.random();
+      for (let i = 0; i < layer.inputs.length; i++) {
+        layer.weights[o][i] = Math.random();
       }
     }
   }

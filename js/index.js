@@ -10,3 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   startAI(canvas);
   startUser(canvasuser)
 });
+
+
+// setInterval(() => {
+//   console.log(FRAMES, FRAMES * INITCULEBRIYAS)
+//   FRAMES = 0
+// }, 1000)
