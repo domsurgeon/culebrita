@@ -1,6 +1,6 @@
 // let rounds = 0
 // let partialBestBrain = {score: -100}
-const UNI = 40
+const UNI = 100
 
 const BOARDCOLUMNS = UNI; // cols
 const canvasSize = UNI; // px
