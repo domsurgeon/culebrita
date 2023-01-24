@@ -1,0 +1,30 @@
+{
+  "name": "arkanai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Arkanoid with Deep Q-Learning using TensorFlow.js.",
+  "license": "UNLICENSED",
+  "author": "Luciano Ropero <lropero@gmail.com>",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "audit": "npx upgradeps -v",
+    "clean": "npx rimraf package-lock.json && npx rimraf node_modules",
+    "lint": "npx prettier-standard --lint",
+    "nuke": "npm run clean && npm cache verify && npm install",
+    "start": "npx concurrently \"npx serve public\" \"node index.js\"",
+    "front": "npx serve public"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "4.2.0",
+    "lodash": "4.17.21"
+  },
+  "devDependencies": {
+    "concurrently": "7.6.0",
+    "cors": "2.8.5",
+    "express": "4.18.2",
+    "morgan": "1.10.0",
+    "prettier-standard": "16.4.1",
+    "serve": "14.1.2"
+  }
+}
