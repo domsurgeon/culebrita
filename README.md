@@ -56,7 +56,7 @@ const agentSettings = {
 }
 ```
 
-- `public/arkanai.js`
+- `public/culebrai.js`
 
 ```js
 const settings = {
