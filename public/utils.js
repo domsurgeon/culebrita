@@ -1,6 +1,6 @@
-const outputLen = 9;
+const outputLen = 25;
 const UNI = 20;
-const reward = 20
+const reward = 30
 const penalty = 1
 
 const BOARDCOLUMNS = UNI;
@@ -44,3 +44,5 @@ const Bugs = () => {
 
   return bugs;
 }
+
+const scoreDom = document.getElementById('score-dom')

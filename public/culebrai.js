@@ -1,7 +1,7 @@
 class Game {
   constructor({ settings }) {
-    this.reward = settings.reward
-    this.penalty = settings.penalty
+    this.reward = settings.reward;
+    this.penalty = settings.penalty;
     this.BOARDCOLUMNS = settings.BOARDCOLUMNS;
     this.STARTPOSITION = settings.STARTPOSITION;
     this.outputLen = settings.outputLen;
@@ -78,6 +78,7 @@ class Game {
     }
 
     this.score += reward;
+    scoreDom.innerHTML = this.score;
 
     return reward;
   };
@@ -105,11 +106,13 @@ class Game {
   };
 
   getCellContent = (v) => {
+    const head = this.snakePieces[0];
+    const hasHead = coordsEqual(head, v);
     const hasBug = this.bugs.find((b) => coordsEqual(b, v));
     const hasSnake = this.snakePieces.slice(1).find((p) => coordsEqual(p, v));
     const offBounds = v.x < 0 || v.x > this.BOARDCOLUMNS - 1 || v.y < 0 || v.y > this.BOARDCOLUMNS - 1;
 
-    return hasBug ? 1 : hasSnake || offBounds ? -1 : 0;
+    return hasBug ? 1 : hasSnake || offBounds ? .5 : hasHead ? 0 : 0;
   };
 
   getInputState = () => {

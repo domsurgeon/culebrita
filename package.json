@@ -7,7 +7,6 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "audit": "npx upgradeps -v",
     "clean": "npx rimraf package-lock.json && npx rimraf node_modules",
     "lint": "npx prettier-standard --lint",
     "nuke": "npm run clean && npm cache verify && npm install",

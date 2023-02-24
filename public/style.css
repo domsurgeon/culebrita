@@ -1,4 +1,4 @@
-body {
+#els {
   align-items: center;
   background-color: #999;
   display: flex;
@@ -44,4 +44,12 @@ body {
   top: 0;
   visibility: hidden;
   width: 100vw;
+}
+
+#score-dom {
+  height: 0;
+  text-align: center;
+  color: white;
+  font-size: 50px;
+  line-height: 90px;
 }

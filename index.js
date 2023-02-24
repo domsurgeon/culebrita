@@ -18,11 +18,11 @@ const agentSettings = {
   },
   network: {
     alpha: 0.00025, // Learning rate
-    inputSize: 9,
+    inputSize: 25,
     layers: [
       // Hidden layers
-      { activation: 'relu', units: 64 },
-      { activation: 'relu', units: 64 }
+      { activation: 'relu', units: 128 },
+      { activation: 'relu', units: 128 }
     ],
     outputSize: 4
   }
